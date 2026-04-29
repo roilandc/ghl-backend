@@ -81,9 +81,16 @@ async function deleteVoiceAgent(agentId) {
 // Body: { businessName, url }
 // Creates a fresh voice agent with scraped website content
 app.post("/setup-bots", async (req, res) => {
-  const { businessName, url } = req.body;
+  console.log("Incoming request body:", JSON.stringify(req.body, null, 2));
+  
+  const businessName = req.body.businessName || req.body.company_name || req.body.companyName || req.body.company;
+  const url = req.body.url || req.body.website || req.body.websiteUrl || req.body.website_url;
+
   if (!businessName || !url) {
-    return res.status(400).json({ error: "businessName and url are required" });
+    return res.status(400).json({ 
+      error: "businessName and url are required",
+      received: req.body 
+    });
   }
   try {
     console.log(`Scraping ${url}...`);
